@@ -1,3 +1,6 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flash_chat/screens/custom_components.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/enum.dart';
 
@@ -6,11 +9,34 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(duration: Duration(seconds: 2), vsync: this);
+    animation = ColorTween(begin: Colors.blueGrey, end: Colors.white).animate(controller);
+    controller.forward();
+
+    @override
+    void dispose() {
+      controller.dispose();
+      super.dispose();
+    }
+
+    controller.addListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: animation.value,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -26,54 +52,28 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     height: 60.0,
                   ),
                 ),
-                Text(
-                  'Flash Chat',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
-                  ),
+                TypewriterAnimatedTextKit(
+                  text: ['Flash Chat','How are you?'],
+                  textStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 45.0,
+                  fontWeight: FontWeight.w900,
+                ),
                 ),
               ],
             ),
             SizedBox(
               height: 48.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
+            RoundedButton(
                 color: Colors.lightBlueAccent,
-                  borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, Screen.login.toString());
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In'
-                  ),
-                ),
-              ),
+                route: Screen.login.toString(),
+                label: 'Log in'
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
+            RoundedButton(
                 color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, Screen.register.toString());
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register'
-                  ),
-                ),
-              ),
+                route: Screen.register.toString(),
+                label: 'Register'
             ),
           ],
         ),
